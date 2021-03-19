@@ -14,39 +14,53 @@
 <body>
 	<div class='login'>
 		<h1>
-			Predictive Maintenance of Heavy Industry Machinery			
+			Predictive Maintenance of a Lathe			
 		</h1>
+		
 		<p>
-			Data from heavy industry machinery are usually hard to acquire for free. The data used for this model are provided by Hochschule für Technik und Wirtschaft Berlin. 
-			The data reflects real predictive maintenance encountered in industry.
-		</p>
-		<p>
-			The objective is to predict whether a machine will have a power failure, PWF, in the production process. This failure mode can be described as, given the product quality (Low, Medium, High), the torque [Nm] and the rotational speed [rpm], if the power required is below 3500 W or above 9000 W, the machine will face a power failure.
+			App to predict the overstrain of the tool used in a lathe in function of the torque [Nm] and the tool wear[min], and to predict the class of the process.
 		</p>
 		
 		<!-- Main Input for receiving query to our ML-->
 		<h2>
 			Prediction
 		</h2>
-		<p>
-			The entry for the product quality will be as followed:
-			Low = 0; 
-			Medium = 1;
-			High = 2.
-		</p>
-		<p>
-			The output power is in natural log form. The power failure limits of 3500 W - 9000 W turn into 8.16 W - 9.10 W. 
-		</p>
+				
 		<h3>
-			Input variables
+			Overstrain prediction
 		</h3>
+		<p>The range of the torque is [-8.39 ; 2.48], and the one of the tool wear is [-4.03 ; 1.22]. Those entries are standardized</p>
 		<form action="{{url_for('predict')}}"method='post'>
-			<input type="text" name="type" placeholder="Type" required="required" />
-			<input type="text" name="torque" placeholder="Torque [Nm]" required="required" />
+			<input type="text" name="torque" placeholder="Torque" required="required" />
+			<input type="text" name="tool wear" placeholder="Tool wear" required="required" />
 			<button type='submit' class="btn btn-primary btn-block btn-large">Predict</button>
 			
 		</form>
 		
+		<h3>
+			Class of the process
+		</h3>
+		<p>
+			The entry for type will be as followed: High = 0; Low = 1; Medium = 2.
+			
+			<br>
+			Class 0 = Lathe okay
+			<br>
+			Class 1 = Lathe failed
+			<br>
+
+			Dif temperature is the diference between the process temperature and air temperature in Kelvin.
+
+
+		</p>
+		<form action="{{url_for('predict_class')}}"method='post'>
+			<input type="text" name='type' placeholder="Type" required="required" />
+			<input type="text" name="Dif temperature" placeholder="Dif temperature [K]" required="required"/>
+			<input type="text" name="Rotational speed" placeholder="Rotational speed [rpm]" required="required"/>
+			<button type="submit" class="btn btn-primary btn-block btn-large">Predict_class</button>
+		</form>
+
+
 		<br>
 		<br>
 		<h3>
@@ -54,6 +68,8 @@
 		</h3>
 		
 		{{prediction_text}}
+		<br>
+		{{prediction_hdf_text}}
 
 		<br>
 		<br>
